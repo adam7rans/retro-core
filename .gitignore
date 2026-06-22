@@ -1,0 +1,130 @@
+# ============================================================
+# ROMs & game data (copyrighted / large — never commit)
+# ============================================================
+
+# ROM/disc subdirectories (Genesis, TG16, N64, Atari*, C64, Amiga, AtariST, ...)
+ROMs/
+CD-ROMs/
+
+# Platforms whose game files live directly in the dir
+/NES/
+/SMS/
+/DOS/
+/Arcade/
+
+# Genesis loose Mega Drive ROMs (note: .md here are ROMs, not markdown)
+/Genesis/*.md
+/Genesis/*.bin
+/Genesis/*.gen
+/Genesis/*.smd
+
+# Downloaded cover art (copyrighted box-art scans; regenerate with the
+# download_art.py scripts — see README). ~300 MB, kept out of the repo.
+emulator-launcher/client/public/art/
+
+# Atari 8-bit bundled game folders
+/Atari8bit/Ultima*/
+/Atari8bit/~/
+
+# ROM file extensions (safety net, anywhere in the tree)
+*.nes
+*.unf
+*.sms
+*.gg
+*.gen
+*.smd
+*.32x
+*.smc
+*.sfc
+*.gb
+*.gba
+*.gbc
+*.pce
+*.a26
+*.a52
+*.a78
+*.lnx
+*.n64
+*.z64
+*.v64
+*.d64
+*.g64
+*.t64
+*.prg
+*.crt
+*.tap
+*.atr
+*.xex
+*.car
+*.cas
+*.atx
+*.adf
+*.adz
+*.ipf
+*.st
+*.stx
+*.msa
+*.dim
+*.iso
+*.cue
+*.chd
+*.gdi
+*.img
+*.rom
+
+# ============================================================
+# Dependencies & build output
+# ============================================================
+node_modules/
+dist/
+build/
+*.log
+
+# ============================================================
+# Sensitive / personal / local data
+# ============================================================
+# Local AI/agent tool config (contains personal shell history & home paths)
+.claude/
+# Generated DB — embeds absolute /Users/<name> paths to local ROMs
+emulator-launcher/server/database.json
+# SQLite play-history (personal usage data)
+emulator-launcher/server/history.db
+# Emulator NVRAM / save data
+nvram/
+*.sav
+*.srm
+*.state
+*.st[0-9]
+
+# Credentials / keys (safety net — none committed)
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.keystore
+id_rsa*
+*.crt.private
+
+# ============================================================
+# Third-party emulators (own upstream git repos — not part of this project)
+# ============================================================
+/Atari800MacX/
+/AppleII/
+/tia-composer/
+
+# Large binaries / disc images / installers
+*.dmg
+*.iso
+*.rar
+*.7z
+*.cdr
+*.mdf
+
+# ============================================================
+# OS / editor cruft
+# ============================================================
+.DS_Store
+*.swp
+.idea/
+.vscode/
