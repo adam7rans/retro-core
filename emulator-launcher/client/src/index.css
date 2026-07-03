@@ -139,6 +139,73 @@ h1, h2, h3, h4, h5 {
   border-color: rgba(255, 255, 255, 0.15);
 }
 
+/* Hover affordances on the cover art */
+.card-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.85);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: rgba(113, 59, 237, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-glow);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  z-index: 2;
+}
+.card-play svg { margin-left: 2px; } /* optically center the triangle */
+
+.card:hover .card-play {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Hide the Play cue when the Info button is the hover target */
+.card-art:has(.card-info-btn:hover) .card-play {
+  opacity: 0;
+}
+
+.card-info-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 4;
+  padding: 4px 12px;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: rgba(10, 10, 14, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.22s ease, background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.card:hover .card-info-btn {
+  opacity: 1;
+}
+
+.card-info-btn:hover {
+  background: var(--accent-color);
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 14px var(--accent-glow);
+  transform: scale(1.06);
+}
+
 .card .title {
   font-family: var(--font-heading);
   font-size: 1rem;
@@ -172,10 +239,39 @@ h1, h2, h3, h4, h5 {
   background: rgba(255, 255, 255, 0.2);
 }
 
+/* Inset scrollbars: keep the thumb ~6px away from the right edge of its column.
+   Achieved with a transparent right border + background-clip so the colored
+   thumb floats inside the gutter instead of hugging the divider. */
+.nav-list::-webkit-scrollbar,
+.main-content::-webkit-scrollbar,
+.profile-columns > div::-webkit-scrollbar {
+  width: 16px;
+}
+.nav-list::-webkit-scrollbar-track,
+.main-content::-webkit-scrollbar-track,
+.profile-columns > div::-webkit-scrollbar-track {
+  background: transparent;
+}
+.nav-list::-webkit-scrollbar-thumb,
+.main-content::-webkit-scrollbar-thumb,
+.profile-columns > div::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.14);
+  border: solid transparent;
+  border-width: 4px 6px 4px 2px; /* 6px transparent gap on the right edge */
+  background-clip: padding-box;
+  border-radius: 999px;
+}
+.nav-list::-webkit-scrollbar-thumb:hover,
+.main-content::-webkit-scrollbar-thumb:hover,
+.profile-columns > div::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.28);
+}
+
 /* Generic Layout */
 .app-container {
   display: flex;
   height: 100vh;
+  overflow: hidden; /* never let the page itself scroll — columns scroll on their own */
 }
 
 .sidebar {
@@ -328,10 +424,13 @@ h1, h2, h3, h4, h5 {
 /* Sidebar Links */
 .nav-list {
   list-style: none;
-  padding: 0 1rem;
+  padding: 0 1rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto; /* long system list scrolls within the sidebar */
 }
 
 .nav-item {
@@ -469,5 +568,380 @@ h1, h2, h3, h4, h5 {
   padding: 3rem !important;
   color: var(--text-muted);
   font-style: italic;
+}
+
+/* ===================== Game Profile Page ===================== */
+.main-content--profile {
+  overflow: hidden; /* the page itself never scrolls; columns scroll on their own */
+  padding: 0;
+}
+
+.profile-columns {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 1.4fr 1fr;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.05); /* thin dividers between columns */
+}
+
+.profile-columns > div {
+  overflow-y: auto;
+  min-height: 0;
+  background: var(--bg-color);
+  padding: 2rem;
+}
+
+/* Column 1 — Art */
+.profile-art {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: flex-start;
+}
+
+.profile-back {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.18s ease;
+}
+.profile-back:hover { color: var(--text-main); }
+
+.profile-art-frame {
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1a22, #0f0f15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+.profile-art-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.profile-art-placeholder {
+  padding: 3rem 1rem;
+  text-align: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.profile-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.6rem;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--gradient-main);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px var(--accent-glow);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.profile-play:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px var(--accent-glow);
+}
+
+/* Column 2 — Info */
+.profile-title {
+  font-size: 2.4rem;
+  line-height: 1.1;
+  margin-bottom: 0.35rem;
+}
+.profile-system {
+  color: var(--accent-color);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  margin-bottom: 1.75rem;
+}
+
+.profile-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.profile-fact {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.profile-fact dt {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.profile-fact dd {
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.profile-story { margin-bottom: 1.5rem; }
+.profile-story h2 {
+  font-size: 1.15rem;
+  margin-bottom: 0.6rem;
+}
+.profile-story p {
+  color: #d6d8de;
+  line-height: 1.6;
+  margin-bottom: 0.8rem;
+}
+
+.profile-wiki {
+  display: inline-block;
+  color: var(--accent-color);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.18s ease;
+}
+.profile-wiki:hover { border-bottom-color: var(--accent-color); }
+
+.profile-empty { color: var(--text-muted); font-style: italic; }
+
+/* Column 3 — Videos */
+.profile-videos-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.profile-videos-heading {
+  font-size: 1.15rem;
+  margin: 0;
+}
+.profile-video-filters {
+  display: flex;
+  gap: 0.4rem;
+}
+.profile-filter-pill {
+  font-family: var(--font-heading);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: color 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+}
+.profile-filter-pill:hover {
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.profile-filter-pill--gameplay.active {
+  color: #5eff8b;
+  background: rgba(94, 255, 139, 0.14);
+  border-color: rgba(94, 255, 139, 0.5);
+}
+.profile-filter-pill--documentary.active {
+  color: #5ec8ff;
+  background: rgba(94, 200, 255, 0.14);
+  border-color: rgba(94, 200, 255, 0.5);
+}
+
+.profile-video { margin-bottom: 1.75rem; }
+.profile-video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.profile-video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.profile-video-title {
+  display: block;
+  width: 100%;
+  margin-top: 0.65rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #eef0f4;
+  line-height: 1.3;
+}
+.profile-video-tag {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.profile-video-tag--gameplay {
+  color: #5eff8b;
+  background: rgba(94, 255, 139, 0.12);
+}
+.profile-video-tag--documentary {
+  color: #5ec8ff;
+  background: rgba(94, 200, 255, 0.12);
+}
+
+/* Cover art — click to expand */
+.profile-art-frame--zoomable {
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.profile-art-frame--zoomable:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--accent-glow);
+}
+
+/* Thumbnail gallery below the cover */
+.profile-gallery {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+}
+.profile-gallery-thumb {
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0f0f15;
+  cursor: pointer;
+  transition: border-color 0.16s ease, transform 0.16s ease;
+}
+.profile-gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.profile-gallery-thumb:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+/* Lightbox / carousel */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: lightbox-fade 0.15s ease;
+}
+@keyframes lightbox-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.lightbox-figure {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: default;
+}
+.lightbox-img {
+  height: 90vh;
+  width: auto;
+  max-width: 92vw;
+  object-fit: contain;
+  display: block;
+  border-radius: 6px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+.lightbox-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem 0.7rem;
+  font-size: 0.85rem;
+  color: #eef0f4;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  border-radius: 0 0 6px 6px;
+}
+.lightbox-counter { color: var(--text-muted); flex-shrink: 0; }
+
+.lightbox-close {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: background 0.16s ease;
+}
+.lightbox-close:hover { background: rgba(255, 255, 255, 0.22); }
+
+.lightbox-nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 33%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #fff;
+}
+.lightbox-nav--left { left: 0; justify-content: flex-start; padding-left: 1.75rem; }
+.lightbox-nav--right { right: 0; justify-content: flex-end; padding-right: 1.75rem; }
+.lightbox-chevron {
+  opacity: 0;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.8));
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.lightbox-nav:hover .lightbox-chevron { opacity: 0.95; }
+.lightbox-nav--left:hover .lightbox-chevron { transform: translateX(-3px); }
+.lightbox-nav--right:hover .lightbox-chevron { transform: translateX(3px); }
+
+/* Stack columns on narrow viewports */
+@media (max-width: 1100px) {
+  .main-content--profile { overflow-y: auto; }
+  .profile-columns {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .profile-columns > div { overflow-y: visible; }
 }
 

@@ -3,6 +3,12 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3055',
+      '/art': 'http://localhost:3055'
+    }
+  },
   plugins: [
     react(),
     VitePWA({

@@ -17,7 +17,17 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use('/art', express.static(path.join(__dirname, '../client/public/art')));
 
 const dbPath = path.join(__dirname, 'database.json');
+const profilesPath = path.join(__dirname, 'profiles.json');
 const artRoot = path.join(__dirname, '../client/public/art');
+
+function loadProfiles() {
+  try {
+    return JSON.parse(fs.readFileSync(profilesPath, 'utf8'));
+  } catch (error) {
+    console.error('Error loading profiles.json:', error);
+    return {};
+  }
+}
 const artExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.gif'];
 
 function loadDatabase() {
@@ -108,6 +118,13 @@ app.post('/api/launch', (req, res) => {
   });
 
   res.json({ success: true, message: `Launched ${game.title}` });
+});
+
+app.get('/api/profile/:slug', (req, res) => {
+  const profiles = loadProfiles();
+  const profile = profiles[req.params.slug];
+  if (!profile) return res.status(404).json({ error: 'Profile not found' });
+  res.json(profile);
 });
 
 app.get('/api/ping', (req, res) => {

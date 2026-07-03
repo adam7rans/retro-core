@@ -1,0 +1,53 @@
+{
+  "super-mario-bros-2": {
+    "slug": "super-mario-bros-2",
+    "gameId": "nes_Super_Mario_Bros._2_USA",
+    "title": "Super Mario Bros. 2",
+    "system": "NES",
+    "wikipedia": "https://en.wikipedia.org/wiki/Super_Mario_Bros._2",
+    "facts": [
+      { "label": "Developer", "value": "Nintendo R&D4" },
+      { "label": "Publisher", "value": "Nintendo" },
+      { "label": "Director", "value": "Kensuke Tanabe" },
+      { "label": "Producer", "value": "Shigeru Miyamoto" },
+      { "label": "Composer", "value": "Koji Kondo" },
+      { "label": "Designers", "value": "Kensuke Tanabe, Yasuhisa Yamamura, Hideki Konno" },
+      { "label": "Programmers", "value": "Toshihiko Nakago, Yasunori Taketani, Toshio Iwawaki" },
+      { "label": "Character Art", "value": "Yoichi Kotabe, Tadashi Sugiyama" },
+      { "label": "Series", "value": "Super Mario" },
+      { "label": "Genre", "value": "2D side-scrolling platformer" },
+      { "label": "Mode", "value": "Single-player" },
+      { "label": "NA Release", "value": "October 9, 1988 (JP origin as Yume Kojo: Doki Doki Panic, July 10, 1987)" },
+      { "label": "Sales", "value": "7.46 million copies (4th best-selling NES game)" },
+      { "label": "Playable Characters", "value": "Mario, Luigi, Toad, Princess Toadstool (each with distinct abilities)" },
+      { "label": "Main Antagonist", "value": "Wart" },
+      { "label": "Structure", "value": "20 levels across 7 worlds" },
+      { "label": "Series Debuts", "value": "Shy Guy, Bob-omb, Birdo, Pokey" },
+      { "label": "Signature Mechanic", "value": "Pick up and throw enemies & pulled vegetables" },
+      { "label": "Re-release", "value": "Super Mario All-Stars (SNES, 1993)" }
+    ],
+    "story": [
+      "Nintendo of America rejected the Japanese Super Mario Bros. 2 as too difficult and too similar to the original, so instead of releasing it in the West they reskinned Yume Kojo: Doki Doki Panic — a 1987 Fuji Television advergame designed by Kensuke Tanabe — with Mario, Luigi, Toad, and Princess Toadstool.",
+      "Its trademark lift-and-throw mechanic and a cast of new enemies (Shy Guy, Bob-omb, Birdo, and Pokey) became permanent staples of the Mario franchise. The game later received a 16-bit remake in Super Mario All-Stars (1993) and remains one of the best-selling NES titles of all time."
+    ],
+    "gallery": [
+      { "src": "/art/gallery/super-mario-bros-2/eu-box.png", "caption": "European box art" },
+      { "src": "/art/gallery/super-mario-bros-2/usa-snap.png", "caption": "USA gameplay screenshot" },
+      { "src": "/art/gallery/super-mario-bros-2/dokidoki-box.png", "caption": "Yume Kojo: Doki Doki Panic box art (the origin)" },
+      { "src": "/art/gallery/super-mario-bros-2/dokidoki-title.png", "caption": "Doki Doki Panic title screen" },
+      { "src": "/art/gallery/super-mario-bros-2/dokidoki-snap.png", "caption": "Doki Doki Panic gameplay" }
+    ],
+    "videos": [
+      { "id": "2EUYSN5aFcE", "title": "The Story of Super Mario Bros. 2 (Gaming Historian)", "type": "documentary" },
+      { "id": "DU5kFPwvlYo", "title": "From Doki Doki Panic to Mario: The Real History", "type": "documentary" },
+      { "id": "4hQN763bEAQ", "title": "The History of Super Mario Bros 2 USA — Documentary", "type": "documentary" },
+      { "id": "ORSIjpIKq8I", "title": "20 Differences: SMB2 vs Doki Doki Panic", "type": "documentary" },
+      { "id": "6ZJDMIAMQQ4", "title": "Super Mario Bros. 2 Is Doki Doki Panic", "type": "documentary" },
+      { "id": "EC0ZS-gImf4", "title": "Full Game 100% Walkthrough (NES)", "type": "gameplay" },
+      { "id": "A1u5nSsVPQ4", "title": "No-Damage 4K Longplay (NES)", "type": "gameplay" },
+      { "id": "uys2klkUufU", "title": "Full Walkthrough — No Commentary", "type": "gameplay" },
+      { "id": "yvtGPt1aJ2M", "title": "NES Longplay HD", "type": "gameplay" },
+      { "id": "IVa9hm8K20I", "title": "Full Playthrough — No Commentary", "type": "gameplay" }
+    ]
+  }
+}

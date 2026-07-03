@@ -1,16 +1,26 @@
 import { useState, useEffect } from 'react';
 import './index.css';
+import GameProfile from './GameProfile.jsx';
 
-function getPathPlatform() {
-  const path = window.location.pathname.replace(/^\//, '');
-  if (!path || path === 'genres') return 'all';
-  return path; // 'history', 'tg16', 'genesis', 'atari2600', etc.
+const slugify = (t) =>
+  t.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-');
+
+function getRoute() {
+  const path = window.location.pathname;
+  const profileMatch = path.match(/^\/games\/(.+)$/);
+  if (profileMatch) {
+    return { type: 'profile', slug: decodeURIComponent(profileMatch[1]) };
+  }
+  const platform = path.replace(/^\//, '');
+  if (!platform || platform === 'genres') return { type: 'platform', platform: 'all' };
+  return { type: 'platform', platform }; // 'history', 'tg16', 'genesis', 'atari2600', etc.
 }
 
 function App() {
   const [db, setDb] = useState({ platforms: [], games: [] });
   const [history, setHistory] = useState([]);
-  const [selectedPlatform, setSelectedPlatform] = useState(getPathPlatform);
+  const [route, setRoute] = useState(getRoute);
+  const selectedPlatform = route.type === 'platform' ? route.platform : null;
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [toast, setToast] = useState(null);
@@ -34,7 +44,7 @@ function App() {
 
   useEffect(() => {
     const onPopState = () => {
-      setSelectedPlatform(getPathPlatform());
+      setRoute(getRoute());
       setCdOnly(false);
     };
     window.addEventListener('popstate', onPopState);
@@ -44,7 +54,13 @@ function App() {
   const navigateTo = (platformId) => {
     const url = platformId === 'all' ? '/' : `/${platformId}`;
     window.history.pushState(null, '', url);
-    setSelectedPlatform(platformId);
+    setRoute({ type: 'platform', platform: platformId });
+    setCdOnly(false);
+  };
+
+  const navigateToGame = (slug) => {
+    window.history.pushState(null, '', `/games/${slug}`);
+    setRoute({ type: 'profile', slug });
     setCdOnly(false);
   };
 
@@ -132,6 +148,11 @@ function App() {
     selectedPlatform === 'history' ? 'Play History' :
     db.platforms.find(p => p.id === selectedPlatform)?.name ?? '';
 
+  const profileGame =
+    route.type === 'profile'
+      ? db.games.find(g => slugify(g.title) === route.slug)
+      : null;
+
   return (
     <div className="app-container">
       {/* Sidebar */}
@@ -158,6 +179,16 @@ function App() {
       </nav>
 
       {/* Main Content */}
+      {route.type === 'profile' ? (
+        <main className="main-content main-content--profile">
+          <GameProfile
+            slug={route.slug}
+            game={profileGame}
+            onLaunch={handleLaunch}
+            onBack={() => navigateTo('all')}
+          />
+        </main>
+      ) : (
       <main className="main-content">
         <header className="header-area">
           <div className="title-area">
@@ -294,6 +325,19 @@ function App() {
                       ) : (
                         <div className="card-art-placeholder">{game.title}</div>
                       )}
+                      <button
+                        type="button"
+                        className="card-info-btn"
+                        onClick={(e) => { e.stopPropagation(); navigateToGame(slugify(game.title)); }}
+                        title="View game info"
+                      >
+                        Info
+                      </button>
+                      <div className="card-play" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="26" height="26">
+                          <path d="M8 5v14l11-7z" fill="currentColor" />
+                        </svg>
+                      </div>
                     </div>
                     <div className="title">{game.title}</div>
                     {selectedPlatform === 'all' && (
@@ -306,6 +350,7 @@ function App() {
           ))
         )}
       </main>
+      )}
 
       {/* Toast Notification */}
       {toast && <div className="toast">{toast}</div>}
