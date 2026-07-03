@@ -96,11 +96,24 @@ nvram/
 *.state
 *.st[0-9]
 
-# Personal game collection lists (contain local ROM inventories)
+# Personal game collection lists and ROM download scripts
 TG16/TG16_Games_Categorized.md
 TG16/TG16_Games_List.md
+Atari2600/download_top50.py
+Atari2600/download_top50.sh
+Genesis/download_top50.py
+download_roms.py
+find_rom.py
+
+# Saved ROM site pages
+md_index.html
+sms_index.html
+
 # Personal debugging notes
 RETROARCH_ATARI800_KEYBOARD_ISSUE.md
+
+# Arcade / emulator config (personal collection)
+cfg/
 
 # Local launcher apps (contain machine-specific paths)
 emulator-launcher/RetroCore.app/
