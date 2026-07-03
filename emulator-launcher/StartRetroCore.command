@@ -8,7 +8,7 @@ node index.js > /tmp/retrocore.log 2>&1 &
 sleep 1
 
 # Open the RetroCore PWA
-open -a "REDACTED_APP_PATH"
+open "http://localhost:3055"
 
 # Close this Terminal window silently
 osascript -e 'tell application "Terminal" to close (every window whose name contains "StartRetroCore")' &>/dev/null

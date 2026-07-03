@@ -85,7 +85,7 @@ build/
 # ============================================================
 # Local AI/agent tool config (contains personal shell history & home paths)
 .claude/
-# Generated DB — embeds absolute /Users/<name> paths to local ROMs
+# Generated DB — embeds absolute paths to local ROMs
 emulator-launcher/server/database.json
 # SQLite play-history (personal usage data)
 emulator-launcher/server/history.db
@@ -95,6 +95,21 @@ nvram/
 *.srm
 *.state
 *.st[0-9]
+
+# Personal game collection lists (contain local ROM inventories)
+TG16/TG16_Games_Categorized.md
+TG16/TG16_Games_List.md
+# Personal debugging notes
+RETROARCH_ATARI800_KEYBOARD_ISSUE.md
+
+# Local launcher apps (contain machine-specific paths)
+emulator-launcher/RetroCore.app/
+emulator-launcher/RetroCore Launcher.app/
+emulator-launcher/RetroCore Launcher Bash.app/
+
+# Python cache
+__pycache__/
+*.pyc
 
 # Credentials / keys (safety net — none committed)
 .env

@@ -2,8 +2,10 @@ import os
 import json
 import re
 
-base_dir = 'REDACTED_PATH'
-mednafen_wrapper = f'python3 "{base_dir}/emulator-launcher/mednafen_launch.py"'
+base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+launcher_dir = os.path.join(base_dir, 'emulator-launcher')
+mednafen_wrapper = f'python3 "{launcher_dir}/mednafen_launch.py"'
+home = os.path.expanduser('~')
 platforms = {
     'pcengine': {'id': 'pcengine', 'name': 'PC Engine', 'cmd': f'{mednafen_wrapper} -video.fs 0 "{{rom}}"'},
     'tg16': {'id': 'tg16', 'name': 'TurboGrafx-16', 'cmd': f'{mednafen_wrapper} -video.fs 0 "{{rom}}"'},
@@ -16,8 +18,8 @@ platforms = {
         'name': 'Atari 2600',
         'cmd': '/Applications/Stella.app/Contents/MacOS/Stella -video metal -vsync 0 -threads 0 -audio.device 0 -audio.preset 1 -audio.sample_rate 48000 -audio.fragment_size 1024 -audio.resampling_quality 2 -audio.headroom 4 -audio.buffer_size 5 "{rom}"'
     },
-    'atari5200': {'id': 'atari5200', 'name': 'Atari 5200', 'cmd': '/Applications/RetroArch.app/Contents/MacOS/RetroArch --appendconfig "REDACTED_PATH/emulator-launcher/retroarch_atari.cfg" -L "~/Library/Application Support/RetroArch/cores/a5200_libretro.dylib" "{rom}"'},
-    'atari7800': {'id': 'atari7800', 'name': 'Atari 7800', 'cmd': '/Applications/RetroArch.app/Contents/MacOS/RetroArch --appendconfig "REDACTED_PATH/emulator-launcher/retroarch_7800.cfg" -L "~/Library/Application Support/RetroArch/cores/prosystem_libretro.dylib" "{rom}"'},
+    'atari5200': {'id': 'atari5200', 'name': 'Atari 5200', 'cmd': f'/Applications/RetroArch.app/Contents/MacOS/RetroArch --appendconfig "{launcher_dir}/retroarch_atari.cfg" -L "{home}/Library/Application Support/RetroArch/cores/a5200_libretro.dylib" "{{rom}}"'},
+    'atari7800': {'id': 'atari7800', 'name': 'Atari 7800', 'cmd': f'/Applications/RetroArch.app/Contents/MacOS/RetroArch --appendconfig "{launcher_dir}/retroarch_7800.cfg" -L "{home}/Library/Application Support/RetroArch/cores/prosystem_libretro.dylib" "{{rom}}"'},
     'c64': {'id': 'c64', 'name': 'Commodore 64', 'cmd': 'open -a /Applications/VICE/x64sc.app "{rom}"'},
     'amiga': {'id': 'amiga', 'name': 'Amiga', 'cmd': 'fs-uae "{rom}"'},
     'atarist': {'id': 'atarist', 'name': 'Atari ST', 'cmd': 'hatari "{rom}"'}
