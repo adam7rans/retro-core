@@ -3,12 +3,13 @@ import json
 import re
 
 base_dir = 'REDACTED_PATH'
+mednafen_wrapper = f'python3 "{base_dir}/emulator-launcher/mednafen_launch.py"'
 platforms = {
-    'pcengine': {'id': 'pcengine', 'name': 'PC Engine', 'cmd': 'mednafen -video.fs 0 "{rom}"'},
-    'tg16': {'id': 'tg16', 'name': 'TurboGrafx-16', 'cmd': 'mednafen -video.fs 0 "{rom}"'},
-    'genesis': {'id': 'genesis', 'name': 'Sega Genesis', 'cmd': 'mednafen "{rom}"'},
-    'sms': {'id': 'sms', 'name': 'Sega Master System', 'cmd': 'mednafen "{rom}"'},
-    'nes': {'id': 'nes', 'name': 'NES', 'cmd': 'mednafen "{rom}"'},
+    'pcengine': {'id': 'pcengine', 'name': 'PC Engine', 'cmd': f'{mednafen_wrapper} -video.fs 0 "{{rom}}"'},
+    'tg16': {'id': 'tg16', 'name': 'TurboGrafx-16', 'cmd': f'{mednafen_wrapper} -video.fs 0 "{{rom}}"'},
+    'genesis': {'id': 'genesis', 'name': 'Sega Genesis', 'cmd': f'{mednafen_wrapper} "{{rom}}"'},
+    'sms': {'id': 'sms', 'name': 'Sega Master System', 'cmd': f'{mednafen_wrapper} "{{rom}}"'},
+    'nes': {'id': 'nes', 'name': 'NES', 'cmd': f'{mednafen_wrapper} "{{rom}}"'},
     'dos': {'id': 'dos', 'name': 'DOSBox', 'cmd': 'cd "{dir}" && dosbox-staging -conf dosbox.conf'},
     'atari2600': {
         'id': 'atari2600',

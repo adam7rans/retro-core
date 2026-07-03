@@ -17,26 +17,32 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use('/art', express.static(path.join(__dirname, '../client/public/art')));
 
 const dbPath = path.join(__dirname, 'database.json');
-let database = { platforms: [], games: [] };
-try {
-  database = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
-} catch (error) {
-  console.error('Error loading database.json:', error);
-}
-
-// Attach art paths if a matching artwork file exists in client/public/art/<platformId>/<gameId>.<ext>
 const artRoot = path.join(__dirname, '../client/public/art');
 const artExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.gif'];
-for (const game of database.games) {
-  const dir = path.join(artRoot, game.platformId);
-  if (!fs.existsSync(dir)) continue;
-  for (const ext of artExtensions) {
-    const file = path.join(dir, game.id + ext);
-    if (fs.existsSync(file)) {
-      game.art = `/art/${game.platformId}/${encodeURIComponent(game.id + ext)}`;
-      break;
+
+function loadDatabase() {
+  let database = { platforms: [], games: [] };
+  try {
+    database = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+  } catch (error) {
+    console.error('Error loading database.json:', error);
+    return database;
+  }
+
+  // Attach art paths if a matching artwork file exists in client/public/art/<platformId>/<gameId>.<ext>
+  for (const game of database.games) {
+    const dir = path.join(artRoot, game.platformId);
+    if (!fs.existsSync(dir)) continue;
+    for (const ext of artExtensions) {
+      const file = path.join(dir, game.id + ext);
+      if (fs.existsSync(file)) {
+        game.art = `/art/${game.platformId}/${encodeURIComponent(game.id + ext)}`;
+        break;
+      }
     }
   }
+
+  return database;
 }
 
 const historyDbPath = path.join(__dirname, 'history.db');
@@ -57,6 +63,7 @@ historyDb.serialize(() => {
 });
 
 app.get('/api/games', (req, res) => {
+  const database = loadDatabase();
   res.json(database);
 });
 
@@ -68,6 +75,7 @@ app.get('/api/history', (req, res) => {
 });
 
 app.post('/api/launch', (req, res) => {
+  const database = loadDatabase();
   const { gameId } = req.body;
   if (!gameId) return res.status(400).json({ error: 'gameId is required' });
 
