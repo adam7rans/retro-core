@@ -95,7 +95,10 @@ app.post('/api/launch', (req, res) => {
   const platform = database.platforms.find(p => p.id === game.platformId);
   if (!platform) return res.status(404).json({ error: 'Platform not found' });
 
-  let cmd = platform.cmd.replace('{rom}', game.rom).replace('{dir}', game.dir || '');
+  let cmd = platform.cmd
+    .replace('{rom}', game.rom)
+    .replace('{dir}', game.dir || '')
+    .replace('{machine}', game.machine || '');
   console.log(`Executing launch command: ${cmd}`);
   
   const startTime = new Date();

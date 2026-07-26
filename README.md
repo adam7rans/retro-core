@@ -142,8 +142,8 @@ node ../server/index.js  # serves UI + API on http://localhost:3055
 ```
 
 For development, run the Vite dev server (`npm run dev` in `client/`) alongside
-the API. On macOS the `RetroCore.app` / `StartRetroCore.command` wrappers start
-the server and open the browser for you.
+the API. On macOS, `StartRetroCore.command` starts the server (unless it is
+already running), waits for it to respond, and opens the browser for you.
 
 ---
 

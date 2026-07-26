@@ -271,9 +271,9 @@ def main(argv: list[str]) -> int:
         return 2
 
     bridge = start_bridge(detect_profile(mednafen_args))
-    child = subprocess.Popen(["mednafen", *mednafen_args])
-    schedule_reinit_hotkeys()
     try:
+        child = subprocess.Popen(["mednafen", *mednafen_args])
+        schedule_reinit_hotkeys()
         return child.wait()
     finally:
         if bridge and bridge.poll() is None:

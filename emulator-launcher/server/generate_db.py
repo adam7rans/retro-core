@@ -1,10 +1,15 @@
 import os
 import json
 import re
+import subprocess
+import xml.etree.ElementTree as ET
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 launcher_dir = os.path.join(base_dir, 'emulator-launcher')
 mednafen_wrapper = f'python3 "{launcher_dir}/mednafen_launch.py"'
+mame_dir = os.path.join(base_dir, 'Arcade', 'MAME')
+mame_wrapper = os.path.join(mame_dir, 'run-mame.sh')
+mame_binary = os.path.join(mame_dir, 'mame')
 home = os.path.expanduser('~')
 platforms = {
     'pcengine': {'id': 'pcengine', 'name': 'PC Engine', 'cmd': f'{mednafen_wrapper} -video.fs 0 "{{rom}}"'},
@@ -12,6 +17,8 @@ platforms = {
     'genesis': {'id': 'genesis', 'name': 'Sega Genesis', 'cmd': f'{mednafen_wrapper} "{{rom}}"'},
     'sms': {'id': 'sms', 'name': 'Sega Master System', 'cmd': f'{mednafen_wrapper} "{{rom}}"'},
     'nes': {'id': 'nes', 'name': 'NES', 'cmd': f'{mednafen_wrapper} "{{rom}}"'},
+    'gbc': {'id': 'gbc', 'name': 'Game Boy Color', 'cmd': f'{mednafen_wrapper} "{{rom}}"'},
+    'arcade': {'id': 'arcade', 'name': 'Arcade', 'cmd': f'"{mame_wrapper}" "{{machine}}"'},
     'dos': {'id': 'dos', 'name': 'DOSBox', 'cmd': 'cd "{dir}" && dosbox-staging -conf dosbox.conf'},
     'atari2600': {
         'id': 'atari2600',
@@ -57,7 +64,7 @@ def scan_files(directory, platform_id, is_dir=False):
     full_path = os.path.join(base_dir, directory)
     if not os.path.exists(full_path): return
     for item in os.listdir(full_path):
-        if item.startswith('.'): continue
+        if item.startswith('.') or item.startswith('[BIOS]'): continue
         item_path = os.path.join(full_path, item)
         if is_dir and os.path.isdir(item_path):
             games.append({
@@ -68,7 +75,7 @@ def scan_files(directory, platform_id, is_dir=False):
                 'rom': item_path,
                 'dir': item_path
             })
-        elif not is_dir and os.path.isfile(item_path) and not item.endswith(('.md', '.sys', '.py', '.sh', '.txt', '.xml', '.sqlite', '.json', '.cfg', '.DS_Store', '.bin')):
+        elif not is_dir and os.path.isfile(item_path) and not item.endswith(('.md', '.sys', '.py', '.sh', '.txt', '.xml', '.sqlite', '.json', '.cfg', '.torrent', '.DS_Store', '.bin')):
             cat = 'Uncategorized'
             file_platform_id = platform_id
             if platform_id == 'tg16':
@@ -80,6 +87,8 @@ def scan_files(directory, platform_id, is_dir=False):
                 cat = 'Master System'
             elif platform_id == 'nes':
                 cat = 'Nintendo'
+            elif platform_id == 'gbc':
+                cat = 'Game Boy Color'
             
             title = os.path.splitext(item)[0].split('(')[0].strip()
             item_id = f"{file_platform_id}_{os.path.splitext(item)[0].replace(' ', '_').replace('(', '').replace(')', '').replace(',', '')}"
@@ -94,11 +103,59 @@ def scan_files(directory, platform_id, is_dir=False):
                 game['isCD'] = True
             games.append(game)
 
+def scan_mame():
+    rom_dir = os.path.join(mame_dir, 'roms')
+    if not os.path.exists(rom_dir):
+        return
+
+    for item in os.listdir(rom_dir):
+        if item.startswith('.') or not item.lower().endswith('.zip'):
+            continue
+        machine = os.path.splitext(item)[0]
+        title = machine
+        try:
+            audit = subprocess.run(
+                [mame_binary, '-rompath', rom_dir, '-verifyroms', machine],
+                capture_output=True,
+                text=True,
+            )
+            if audit.returncode != 0:
+                continue
+            result = subprocess.run(
+                [mame_binary, '-listxml', machine],
+                capture_output=True,
+                check=True,
+                text=True,
+            )
+            root = ET.fromstring(result.stdout)
+            machine_node = next(
+                (node for node in root.findall('machine') if node.get('name') == machine),
+                None,
+            )
+            if machine_node is None or machine_node.get('runnable') == 'no' or machine_node.get('isbios') == 'yes':
+                continue
+            description = machine_node.findtext('description')
+            if description:
+                title = description
+        except (OSError, subprocess.CalledProcessError, ET.ParseError):
+            pass
+
+        games.append({
+            'id': f'arcade_{machine}',
+            'title': title,
+            'platformId': 'arcade',
+            'category': 'Arcade',
+            'rom': os.path.join(rom_dir, item),
+            'machine': machine,
+        })
+
 scan_files('TG16/ROMs', 'tg16')
 scan_files('TG16/CD-ROMs', 'tg16')
 scan_files('Genesis/ROMs', 'genesis')
 scan_files('SMS', 'sms')
 scan_files('NES', 'nes')
+scan_files('GameBoyColor/ROMs', 'gbc')
+scan_mame()
 scan_files('DOS', 'dos', is_dir=True)
 scan_files('Atari2600/ROMs', 'atari2600')
 scan_files('Atari5200/ROMs', 'atari5200')

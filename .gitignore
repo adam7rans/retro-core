@@ -79,6 +79,8 @@ node_modules/
 dist/
 build/
 *.log
+emulator-launcher/client/dev-dist/
+emulator-launcher/mednafen_gc_bridge
 
 # ============================================================
 # Sensitive / personal / local data
@@ -114,11 +116,6 @@ RETROARCH_ATARI800_KEYBOARD_ISSUE.md
 
 # Arcade / emulator config (personal collection)
 cfg/
-
-# Local launcher apps (contain machine-specific paths)
-emulator-launcher/RetroCore.app/
-emulator-launcher/RetroCore Launcher.app/
-emulator-launcher/RetroCore Launcher Bash.app/
 
 # Python cache
 __pycache__/

@@ -333,13 +333,11 @@ function App() {
                       >
                         Info
                       </button>
-                      <div className="card-play" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" width="26" height="26">
-                          <path d="M8 5v14l11-7z" fill="currentColor" />
-                        </svg>
-                      </div>
                     </div>
-                    <div className="title">{game.title}</div>
+                    <div className="card-title-row">
+                      <span className="card-play" aria-hidden="true" />
+                      <div className="title">{game.title}</div>
+                    </div>
                     {selectedPlatform === 'all' && (
                       <div className="category">{db.platforms.find(p => p.id === game.platformId)?.name}</div>
                     )}
