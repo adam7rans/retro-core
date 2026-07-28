@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './index.css';
 import GameProfile from './GameProfile.jsx';
+import PlatformLogo from './logos/PlatformLogos.jsx';
 
 const slugify = (t) =>
   t.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-');
@@ -25,6 +26,9 @@ function App() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [toast, setToast] = useState(null);
 
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [transitioning, setTransitioning] = useState(false);
+  const pendingNav = useRef(null);
   const [sortField, setSortField] = useState('startTime');
   const [sortDesc, setSortDesc] = useState(true);
   const [cdOnly, setCdOnly] = useState(false);
@@ -52,10 +56,17 @@ function App() {
   }, []);
 
   const navigateTo = (platformId) => {
+    if (platformId === selectedPlatform) return;
     const url = platformId === 'all' ? '/' : `/${platformId}`;
     window.history.pushState(null, '', url);
-    setRoute({ type: 'platform', platform: platformId });
-    setCdOnly(false);
+    pendingNav.current = platformId;
+    setTransitioning(true);
+    setTimeout(() => {
+      setRoute({ type: 'platform', platform: pendingNav.current });
+      setCdOnly(false);
+      setTransitioning(false);
+      pendingNav.current = null;
+    }, 200);
   };
 
   const navigateToGame = (slug) => {
@@ -154,10 +165,34 @@ function App() {
       : null;
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${sidebarOpen ? '' : 'sidebar-collapsed'}`}>
+      {!sidebarOpen && (
+        <button
+          className="sidebar-toggle sidebar-toggle--collapsed"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Open sidebar"
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <rect x="1" y="1" width="5" height="16" rx="1.5" fill="currentColor" opacity="0.5"/>
+            <rect x="6" y="1" width="11" height="16" rx="1.5" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+          </svg>
+        </button>
+      )}
       {/* Sidebar */}
-      <nav className="sidebar glass-panel">
-        <div className="brand">RetroCore</div>
+      <nav className={`sidebar glass-panel ${sidebarOpen ? '' : 'sidebar--hidden'}`}>
+        <div className="sidebar-header">
+          <div className="brand">RetroCore</div>
+          <button
+            className="sidebar-toggle sidebar-toggle--open"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close sidebar"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <rect x="1" y="1" width="5" height="16" rx="1.5" fill="currentColor"/>
+              <rect x="6" y="1" width="11" height="16" rx="1.5" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+            </svg>
+          </button>
+        </div>
         <ul className="nav-list">
           <li className={`nav-item ${selectedPlatform === 'all' ? 'active' : ''}`}
             onClick={() => navigateTo('all')}>
@@ -191,8 +226,12 @@ function App() {
       ) : (
       <main className="main-content">
         <header className="header-area">
-          <div className="title-area">
-            <h2 style={{ fontFamily: 'var(--font-heading)' }}>{headerTitle}</h2>
+          <div className={`title-area ${transitioning ? 'platform-fade-out' : 'platform-fade-in'}`}>
+            {selectedPlatform && selectedPlatform !== 'all' && selectedPlatform !== 'history' ? (
+              <PlatformLogo platformId={selectedPlatform} className="header-logo" />
+            ) : (
+              <h2 style={{ fontFamily: 'var(--font-heading)' }}>{headerTitle}</h2>
+            )}
             {showCdFilter && (
               <button
                 type="button"
@@ -253,6 +292,7 @@ function App() {
           </div>
         </header>
 
+        <div className={transitioning ? 'platform-fade-out' : 'platform-fade-in'}>
         {selectedPlatform === 'history' ? (
           <section className="category-section">
             <div className="history-table-container">
@@ -347,6 +387,7 @@ function App() {
             </section>
           ))
         )}
+        </div>
       </main>
       )}
 

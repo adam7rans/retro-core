@@ -425,6 +425,67 @@ h1, h2, h3, h4, h5 {
   border-radius: 10px;
 }
 
+/* Sidebar collapse / expand */
+.sidebar {
+  transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+              opacity 0.2s ease,
+              transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.sidebar--hidden {
+  width: 0;
+  opacity: 0;
+  transform: translateX(-280px);
+  overflow: hidden;
+  pointer-events: none;
+  border-right: none;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 0.75rem;
+}
+
+.sidebar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.18s ease, background 0.18s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-toggle:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-toggle--collapsed {
+  position: fixed;
+  left: 0;
+  top: 2rem;
+  z-index: 60;
+  border-radius: 0 8px 8px 0;
+}
+
+/* Platform transition */
+.platform-fade-out {
+  opacity: 0;
+  transition: opacity 0.18s ease-out;
+}
+.platform-fade-in {
+  opacity: 1;
+  transition: opacity 0.18s ease-in;
+}
+
 /* Sidebar branding */
 .brand {
   padding: 2rem;
@@ -482,6 +543,13 @@ h1, h2, h3, h4, h5 {
 .nav-item:hover:not(.active) {
   background: rgba(255, 255, 255, 0.03);
   color: #fff;
+}
+
+.header-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+  color: var(--text-main);
 }
 
 /* Categories & Grids */
